@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import * as THREE from 'three';
 import Lottie from 'lottie-react';
 import wallpaperAnimation from '../assets/wallpaper-animation.json';
 import { Canvas, useFrame } from '@react-three/fiber';
@@ -8,6 +9,7 @@ import { Sphere, MeshDistortMaterial } from '@react-three/drei';
 
 const AnimatedSphere = () => {
   const meshRef = useRef<THREE.Mesh>(null);
+
 
   useFrame(() => {
     if (meshRef.current) {

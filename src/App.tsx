@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -17,9 +17,9 @@ import { AuthProvider } from './contexts/AuthContext';
 import { initializeApp } from 'firebase/app';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import './index.css';
 import firebaseConfig from './FirebaseConfig';
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 export const db = getFirestore(app);
@@ -36,41 +36,73 @@ function App() {
     return () => unsubscribe();
   }, []);
 
+  const location = useLocation();
+
+  const authRoutes = ['/login', '/register', '/'];
+
+  const isAuthRoute = authRoutes.includes(location.pathname);
+
+  return (
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex transition-colors duration-300">
+      {!isAuthRoute && (
+        <>
+          <Sidebar isExpanded={isSidebarExpanded} setIsExpanded={setIsSidebarExpanded} />
+          <div className="flex-1 flex flex-col">
+            <Header toggleSidebar={() => setIsSidebarExpanded(!isSidebarExpanded)} user={user} />
+            <AnimatePresence mode="wait">
+              <motion.main
+                className="flex-grow p-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Routes>
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/explore" element={<Explore />} />
+                  <Route path="/favorites" element={<Favorites />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/profile" element={<Profile />} />
+                </Routes>
+              </motion.main>
+            </AnimatePresence>
+            <Footer />
+          </div>
+        </>
+      )}
+      {isAuthRoute && (
+        <div className="flex-1 flex justify-center items-center">
+          <AnimatePresence mode="wait">
+            <motion.main
+              className="flex-grow p-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+              </Routes>
+            </motion.main>
+          </AnimatePresence>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AppWrapper() {
   return (
     <Router>
       <ThemeProvider>
         <AuthProvider>
-          <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex transition-colors duration-300">
-            <Sidebar isExpanded={isSidebarExpanded} setIsExpanded={setIsSidebarExpanded} />
-            <div className="flex-1 flex flex-col">
-              <Header toggleSidebar={() => setIsSidebarExpanded(!isSidebarExpanded)} user={user} />
-              <AnimatePresence mode="wait">
-                <motion.main
-                  className="flex-grow p-4"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Routes>
-                    <Route path="/" element={<LandingPage />} />
-                    <Route path="/home" element={<Home />} />
-                    <Route path="/explore" element={<Explore />} />
-                    <Route path="/favorites" element={<Favorites />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/profile" element={<Profile />} />
-                  </Routes>
-                </motion.main>
-              </AnimatePresence>
-              <Footer />
-            </div>
-          </div>
+          <App />
         </AuthProvider>
       </ThemeProvider>
     </Router>
   );
 }
 
-export default App;
+export default AppWrapper;

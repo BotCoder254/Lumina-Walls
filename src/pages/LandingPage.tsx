@@ -2,8 +2,8 @@ import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import * as THREE from 'three';
-import Lottie from 'lottie-react';
-import wallpaperAnimation from '../assets/wallpaper-animation.json';
+// import Lottie from 'lottie-react';
+// import wallpaperAnimation from '../assets/wallpaper-animation.json';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Sphere, MeshDistortMaterial } from '@react-three/drei';
 
@@ -50,11 +50,11 @@ const LandingPage: React.FC = () => {
         transition={{ duration: 0.8, delay: 0.3 }}
         className="w-64 h-64 mb-8 z-10"
       >
-        <Lottie
+        {/* <Lottie
           animationData={wallpaperAnimation}
           loop={true}
           style={{ width: '100%', height: '100%' }}
-        />
+        /> */}
       </motion.div>
 
       <motion.div

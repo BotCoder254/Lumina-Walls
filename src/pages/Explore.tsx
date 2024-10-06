@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Loader } from 'lucide-react';
 
 const Explore: React.FC = () => {
-  const [wallpapers, setWallpapers] = useState([]);
+  const [wallpapers, setWallpapers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
 

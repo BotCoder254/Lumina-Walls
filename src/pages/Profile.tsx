@@ -22,7 +22,7 @@ const Profile: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      let photoURL = user?.photoURL;
+      let photoURL : any = user?.photoURL;
 
       if (profilePicture) {
         const storage = getStorage();

@@ -1,75 +1,197 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
+import { useNavigate, Link } from 'react-router-dom';
+
+import { motion } from 'framer-motion';
+
 import { useAuth } from '../contexts/AuthContext';
 
+import { FiMail, FiLock, FiLogIn } from 'react-icons/fi';
+
+
+
 const Login = () => {
+
   const [email, setEmail] = useState('');
+
   const [password, setPassword] = useState('');
+
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+
   const { login } = useAuth();
 
+  const navigate = useNavigate();
+
+
+
   const handleSubmit = async (e: React.FormEvent) => {
+
     e.preventDefault();
+
     try {
-      setError('');
-      setLoading(true);
+
       await login(email, password);
+
       navigate('/dashboard/home');
+
     } catch (err) {
-      setError('Failed to sign in');
-      console.error(err);
+
+      setError('Failed to login');
+
     }
-    setLoading(false);
+
   };
 
+
+
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
+
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+
+      <motion.div
+
+        initial={{ opacity: 0, y: 20 }}
+
+        animate={{ opacity: 1, y: 0 }}
+
+        transition={{ duration: 0.5 }}
+
+        className="w-full max-w-md"
+
+      >
+
+        <div className="bg-surface/50 backdrop-blur-lg rounded-2xl p-8 shadow-xl border border-surface-light">
+
+          <div className="text-center mb-8">
+
+            <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+
+            <p className="text-gray-400">Sign in to continue to Lumina Walls</p>
+
           </div>
-        )}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required
-            />
+
+
+
+          {error && (
+
+            <motion.div
+
+              initial={{ opacity: 0, y: -10 }}
+
+              animate={{ opacity: 1, y: 0 }}
+
+              className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-2 rounded-lg mb-6"
+
+            >
+
+              {error}
+
+            </motion.div>
+
+          )}
+
+
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+
+            <div>
+
+              <div className="relative">
+
+                <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+
+                <input
+
+                  type="email"
+
+                  placeholder="Email"
+
+                  value={email}
+
+                  onChange={(e) => setEmail(e.target.value)}
+
+                  className="w-full bg-background text-white pl-10 pr-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary border border-surface-light"
+
+                />
+
+              </div>
+
+            </div>
+
+
+
+            <div>
+
+              <div className="relative">
+
+                <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+
+                <input
+
+                  type="password"
+
+                  placeholder="Password"
+
+                  value={password}
+
+                  onChange={(e) => setPassword(e.target.value)}
+
+                  className="w-full bg-background text-white pl-10 pr-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary border border-surface-light"
+
+                />
+
+              </div>
+
+            </div>
+
+
+
+            <motion.button
+
+              whileHover={{ scale: 1.02 }}
+
+              whileTap={{ scale: 0.98 }}
+
+              type="submit"
+
+              className="w-full bg-primary hover:bg-primary-dark text-white py-3 rounded-lg font-semibold flex items-center justify-center space-x-2 transition-colors shadow-lg shadow-primary/20"
+
+            >
+
+              <FiLogIn className="text-xl" />
+
+              <span>Sign In</span>
+
+            </motion.button>
+
+          </form>
+
+
+
+          <div className="mt-6 text-center text-gray-400">
+
+            Don't have an account?{' '}
+
+            <Link to="/register" className="text-primary hover:text-primary-light transition-colors">
+
+              Register
+
+            </Link>
+
           </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 
-            transition duration-300 disabled:opacity-50"
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
-      </div>
+
+        </div>
+
+      </motion.div>
+
     </div>
+
   );
+
 };
 
+
+
 export default Login;
+
+

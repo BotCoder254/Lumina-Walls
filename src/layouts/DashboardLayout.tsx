@@ -1,27 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
-import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import Footer from '../components/Footer';
-import { useAuth } from '../contexts/AuthContext';
+import { motion } from 'framer-motion';
 
-const DashboardLayout: React.FC = () => {
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
-  const { currentUser } = useAuth();
-
+const DashboardLayout = () => {
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex transition-colors duration-300">
-      <Sidebar isExpanded={isSidebarExpanded} setIsExpanded={setIsSidebarExpanded} />
-      <div className="flex-1 flex flex-col">
-        <Header 
-          toggleSidebar={() => setIsSidebarExpanded(!isSidebarExpanded)} 
-          user={currentUser}
-        />
-        <main className="flex-grow p-4">
-          <Outlet />
-        </main>
-        <Footer />
-      </div>
+    <div className="flex min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-purple-900">
+      <Sidebar />
+      <motion.main 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="flex-1 relative"
+      >
+        <div className="absolute inset-0 overflow-y-auto">
+          <div className="min-h-full p-4">
+            <Outlet />
+          </div>
+        </div>
+      </motion.main>
     </div>
   );
 };

@@ -3,7 +3,11 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  css: {
-    postcss: './postcss.config.js',  // Ensure PostCSS is configured here
+  define: {
+    'process.env': {}
   },
+  server: {
+    port: 3000,
+    host: true
+  }
 });

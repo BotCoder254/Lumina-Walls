@@ -1,18 +1,10 @@
 const firebaseConfig = {
-
-  apiKey: "AIzaSyBMjKssyRSZJ16EhSdVOFd2XjIkj8_BT-E",
-
-  authDomain: "twitterclone-47ebf.firebaseapp.com",
-
-  projectId: "twitterclone-47ebf",
-
-  storageBucket: "twitterclone-47ebf.appspot.com",
-
-  messagingSenderId: "700556014223",
-
-  appId: "1:700556014223:web:a0646158ade0b1e55ab6fa"
-
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-  
-  export default firebaseConfig;
+export default firebaseConfig;

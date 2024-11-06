@@ -1,81 +1,114 @@
-import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FiHeart, FiFolder, FiDownload } from 'react-icons/fi';
-import WallpaperGrid from '../components/WallpaperGrid';
-import { gsap } from 'gsap';
-
-const Favorites = () => {
-  useEffect(() => {
-    const tl = gsap.timeline();
-    tl.from('.stats-card', {
-      y: 20,
-      opacity: 0,
-      duration: 0.6,
-      stagger: 0.2,
-      ease: 'power3.out'
-    });
-  }, []);
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-purple-900">
-      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex items-center gap-3 mb-8">
-            <FiHeart className="text-3xl text-pink-500" />
-            <h1 className="text-3xl font-bold text-white">Your Favorites</h1>
-          </div>
-
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <motion.div
-              whileHover={{ y: -5 }}
-              className="stats-card bg-gradient-to-br from-pink-900/50 to-purple-900/50 p-6 rounded-xl backdrop-blur-sm"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 mb-1">Total Favorites</p>
-                  <h3 className="text-2xl font-bold text-white">247</h3>
-                </div>
-                <FiHeart className="text-2xl text-pink-500" />
-              </div>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ y: -5 }}
-              className="stats-card bg-gradient-to-br from-blue-900/50 to-indigo-900/50 p-6 rounded-xl backdrop-blur-sm"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 mb-1">Collections</p>
-                  <h3 className="text-2xl font-bold text-white">12</h3>
-                </div>
-                <FiFolder className="text-2xl text-blue-500" />
-              </div>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ y: -5 }}
-              className="stats-card bg-gradient-to-br from-purple-900/50 to-violet-900/50 p-6 rounded-xl backdrop-blur-sm"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 mb-1">Downloads</p>
-                  <h3 className="text-2xl font-bold text-white">89</h3>
-                </div>
-                <FiDownload className="text-2xl text-purple-500" />
-              </div>
-            </motion.div>
-          </div>
-
-          <WallpaperGrid />
-        </motion.div>
-      </div>
-    </div>
-  );
-};
-
-export default Favorites;
+import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { FiHeart, FiImage } from 'react-icons/fi';
+import Masonry from 'react-masonry-css';
+import { useAuth } from '../contexts/AuthContext';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../App';
+import { Wallpaper } from '../types';
+import { UNSPLASH_CONFIG } from '../config/unsplash';
+import WallpaperGrid from '../components/WallpaperGrid';
+import { LoadingSpinner } from '../components/LoadingSpinner';
+
+const Favorites = () => {
+  const { currentUser } = useAuth();
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [favoriteWallpapers, setFavoriteWallpapers] = useState<Wallpaper[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch user's favorites
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const userRef = doc(db, 'users', currentUser.uid);
+    const unsubscribe = onSnapshot(userRef, async (doc) => {
+      if (doc.exists()) {
+        const userData = doc.data();
+        const favIds = userData.favorites || [];
+        setFavorites(favIds);
+        
+        // Fetch wallpaper details for each favorite
+        if (favIds.length > 0) {
+          try {
+            const wallpaperPromises = favIds.map(async (id: string) => {
+              const response = await fetch(
+                `${UNSPLASH_CONFIG.baseUrl}/photos/${id}`,
+                {
+                  headers: {
+                    'Authorization': `Client-ID ${UNSPLASH_CONFIG.accessKey}`
+                  }
+                }
+              );
+              const data = await response.json();
+              return {
+                id: data.id,
+                urls: {
+                  regular: data.urls.regular,
+                  full: data.urls.full,
+                  raw: data.urls.raw
+                },
+                user: {
+                  name: data.user.name,
+                  username: data.user.username,
+                  profile_image: data.user.profile_image.medium
+                },
+                likes: data.likes,
+                description: data.description || data.alt_description || 'Untitled'
+              };
+            });
+
+            const wallpapers = await Promise.all(wallpaperPromises);
+            setFavoriteWallpapers(wallpapers);
+          } catch (error) {
+            console.error('Error fetching favorite wallpapers:', error);
+          }
+        } else {
+          setFavoriteWallpapers([]);
+        }
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [currentUser]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (favorites.length === 0) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+        <FiHeart className="text-6xl text-primary mb-4" />
+        <h2 className="text-2xl font-bold text-white mb-2">No Favorites Yet</h2>
+        <p className="text-gray-400 text-center max-w-md">
+          Start exploring and add some wallpapers to your favorites collection.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="flex items-center gap-3 mb-8">
+          <FiHeart className="text-3xl text-primary" />
+          <h1 className="text-3xl font-bold text-white">Your Favorites</h1>
+        </div>
+
+        {/* Pass the favoriteWallpapers to WallpaperGrid */}
+        <WallpaperGrid 
+          initialWallpapers={favoriteWallpapers}
+          disableInfiniteScroll
+        />
+      </div>
+    </div>
+  );
+};
+
+export default Favorites;
+

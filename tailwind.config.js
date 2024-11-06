@@ -18,43 +18,85 @@ export default {
 
         primary: {
 
-          DEFAULT: '#0066FF',
+          DEFAULT: '#2563EB', // Bright blue
 
-          light: '#3385FF',
+          light: '#3B82F6',
 
-          dark: '#0047B3',
+           dark: '#1D4ED8',
+
+         },
+
+        accent: {
+
+          DEFAULT: '#EC4899', // Pink
+
+          light: '#F472B6',
+
+          dark: '#DB2777',
+
+        },
+
+        // background: {
+
+        //   DEFAULT: '#FFFFFF',
+
+        //   light: '#F8FAFC',
+
+        //   dark: '#F1F5F9',
+
+        // },
+
+        // surface: {
+
+        //   DEFAULT: '#FFFFFF',
+
+        //   light: '#F8FAFC',
+
+        //   dark: '#F1F5F9',
+
+        // },
+
+        text: {
+
+          DEFAULT: '#1E293B', // Slate-800
+
+          primary: '#0F172A', // Slate-900
+
+          secondary: '#475569', // Slate-600
+
+          light: '#94A3B8', // Slate-400
 
         },
 
-        background: {
+        border: {
 
-          DEFAULT: '#000000',
+          DEFAULT: '#E2E8F0', // Slate-200
 
-          light: '#1A1A1A',
+          light: '#F1F5F9', // Slate-100
 
-          dark: '#000000',
+          dark: '#CBD5E1', // Slate-300
 
-        },
-
-        surface: {
-
-          DEFAULT: '#121212',
-
-          light: '#1E1E1E',
-
-          dark: '#0A0A0A',
-
-        },
+        }
 
       },
 
       backgroundImage: {
 
-        'gradient-custom': 'linear-gradient(to right, #000000, #0066FF)',
+        'gradient-custom': 'linear-gradient(135deg, #2563EB, #EC4899)',
 
-        'gradient-dark': 'linear-gradient(to right, #000000, #001F4D)',
+        'gradient-hover': 'linear-gradient(135deg, #1D4ED8, #DB2777)',
+
+        'gradient-light': 'linear-gradient(135deg, #F8FAFC, #F1F5F9)',
 
       },
+
+      boxShadow: {
+
+        'custom': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+
+        'custom-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+
+      }
 
     },
 

@@ -15,7 +15,7 @@ const Explore: React.FC = () => {
         const response = await axios.get('https://api.unsplash.com/photos/random', {
           params: {
             count: 20,
-            client_id: 'YOUR_UNSPLASH_ACCESS_KEY', // Replace with your Unsplash API key
+            client_id: 'oRz__lKi7bWKvEFhKhT2ighN2aJcWZ_BwPB-JIkelBk', // Replace with your Unsplash API key
           },
         });
         setWallpapers(prevWallpapers => [...prevWallpapers, ...response.data]);

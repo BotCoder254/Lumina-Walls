@@ -1,10 +1,18 @@
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
-  };
+
+  apiKey: "AIzaSyBMjKssyRSZJ16EhSdVOFd2XjIkj8_BT-E",
+
+  authDomain: "twitterclone-47ebf.firebaseapp.com",
+
+  projectId: "twitterclone-47ebf",
+
+  storageBucket: "twitterclone-47ebf.appspot.com",
+
+  messagingSenderId: "700556014223",
+
+  appId: "1:700556014223:web:a0646158ade0b1e55ab6fa"
+
+};
+
   
   export default firebaseConfig;

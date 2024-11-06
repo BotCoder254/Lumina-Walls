@@ -1,102 +1,97 @@
-import React, { useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { Image, Search, Bell, User, Menu, Sun, Moon } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { ThemeContext } from '../contexts/ThemeContext';
-import { AuthContext } from '../contexts/AuthContext';
-
-interface HeaderProps {
-  toggleSidebar: () => void;
-  user: any;
-}
-
-const Header: React.FC<HeaderProps> = ({ toggleSidebar, user }) => {
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const { theme, toggleTheme } = useContext(ThemeContext);
-  const { logout } = useContext(AuthContext);
-
-  return (
-    <header className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-10 transition-colors duration-300">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={toggleSidebar}
-            className="mr-4 text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
-          >
-            <Menu className="w-6 h-6" />
-          </motion.button>
-          <Link to="/home" className="flex items-center space-x-2">
-            <Image className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
-            <span className="text-xl font-bold text-gray-800 dark:text-white">Lumina Walls</span>
-          </Link>
-        </div>
-        <div className="flex-1 max-w-xl mx-4">
-          <motion.div
-            className="relative"
-            animate={{ width: isSearchFocused ? '100%' : '80%' }}
-            transition={{ duration: 0.3 }}
-          >
-            <input
-              type="text"
-              placeholder="Search wallpapers..."
-              className="w-full px-4 py-2 rounded-full border-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 bg-white dark:bg-gray-700 text-gray-800 dark:text-white"
-              onFocus={() => setIsSearchFocused(true)}
-              onBlur={() => setIsSearchFocused(false)}
-            />
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-300" />
-          </motion.div>
-        </div>
-        <nav className="flex items-center space-x-4">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={toggleTheme}
-            className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
-          >
-            {theme === 'dark' ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
-          >
-            <Bell className="w-6 h-6" />
-          </motion.button>
-          {user ? (
-            <div className="relative group">
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold cursor-pointer"
-              >
-                {user.photoURL ? (
-                  <img src={user.photoURL} alt="Profile" className="w-full h-full rounded-full object-cover" />
-                ) : (
-                  user.displayName ? user.displayName.charAt(0).toUpperCase() : <User className="w-5 h-5" />
-                )}
-              </motion.div>
-              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 hidden group-hover:block">
-                <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Profile</Link>
-                <button onClick={logout} className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Logout</button>
-              </div>
-            </div>
-          ) : (
-            <Link to="/login">
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
-              >
-                <User className="w-6 h-6" />
-              </motion.button>
-            </Link>
-          )}
-        </nav>
-      </div>
-    </header>
-  );
-};
-
-export default Header;
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { User } from 'firebase/auth';
+import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
+
+interface HeaderProps {
+  toggleSidebar: () => void;
+  user: User | null;
+}
+
+const Header: React.FC<HeaderProps> = ({ toggleSidebar, user }) => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch (error) {
+      console.error('Failed to log out:', error);
+    }
+  };
+
+  return (
+    <header className="bg-white dark:bg-gray-800 shadow-sm">
+      <div className="flex items-center justify-between px-4 py-3">
+        <button
+          onClick={toggleSidebar}
+          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+        >
+          <MenuIcon className="w-6 h-6" />
+        </button>
+
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            {isDark ? <SunIcon className="w-6 h-6" /> : <MoonIcon className="w-6 h-6" />}
+          </button>
+
+          {user && (
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => navigate('/dashboard/profile')}
+                className="flex items-center space-x-2 hover:bg-gray-100 dark:hover:bg-gray-700 
+                rounded-lg px-3 py-2"
+              >
+                <img
+                  src={user.photoURL || '/default-avatar.png'}
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full"
+                />
+                <span className="text-sm font-medium dark:text-white">
+                  {user.displayName || user.email}
+                </span>
+              </button>
+              <button
+                onClick={handleLogout}
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 
+                dark:hover:text-white px-3 py-2 rounded-lg"
+              >
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+};
+
+const MenuIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+  </svg>
+);
+
+const SunIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" 
+    />
+  </svg>
+);
+
+const MoonIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" 
+    />
+  </svg>
+);
+
+export default Header;

@@ -1,17 +1,15 @@
-import React from 'react';
-import { Heart } from 'lucide-react';
-
-const Footer: React.FC = () => {
-  return (
-    <footer className="bg-gray-800 text-white py-4">
-      <div className="container mx-auto px-4 text-center">
-        <p className="flex items-center justify-center">
-          Made with <Heart className="w-4 h-4 mx-1 text-red-500" /> by Lumina Walls Team
-        </p>
-        <p className="mt-2 text-sm">© 2024 Lumina Walls. All rights reserved.</p>
-      </div>
-    </footer>
-  );
-};
-
-export default Footer;
+import React from 'react';
+
+const Footer: React.FC = () => {
+  return (
+    <footer className="bg-white dark:bg-gray-800 border-t dark:border-gray-700">
+      <div className="container mx-auto px-4 py-3">
+        <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+          © {new Date().getFullYear()} TaskMaster Pro. All rights reserved.
+        </p>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;

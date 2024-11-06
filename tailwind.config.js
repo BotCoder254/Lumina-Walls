@@ -1,43 +1,65 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+
+export default {
+
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
+
+    "./index.html",
+
+    "./src/**/*.{js,ts,jsx,tsx}",
+
   ],
+
   theme: {
+
     extend: {
+
       colors: {
-        purple: {
-          50: '#f5f3ff',
-          100: '#ede9fe',
-          200: '#ddd6fe',
-          300: '#c4b5fd',
-          400: '#a78bfa',
-          500: '#8b5cf6',
-          600: '#7c3aed',
-          700: '#6d28d9',
-          800: '#5b21b6',
-          900: '#4c1d95',
+
+        primary: {
+
+          DEFAULT: '#0066FF',
+
+          light: '#3385FF',
+
+          dark: '#0047B3',
+
         },
-        indigo: {
-          500: '#6366F1',
+
+        background: {
+
+          DEFAULT: '#000000',
+
+          light: '#1A1A1A',
+
+          dark: '#000000',
+
         },
-        pink: {
-          500: '#EC4899',
+
+        surface: {
+
+          DEFAULT: '#121212',
+
+          light: '#1E1E1E',
+
+          dark: '#0A0A0A',
+
         },
+
       },
-      animation: {
-        'float': 'float 6s ease-in-out infinite',
+
+      backgroundImage: {
+
+        'gradient-custom': 'linear-gradient(to right, #000000, #0066FF)',
+
+        'gradient-dark': 'linear-gradient(to right, #000000, #001F4D)',
+
       },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-20px)' },
-        },
-      },
-      boxShadow: {
-        'soft': '0 2px 15px rgba(0, 0, 0, 0.08)',
-      },
+
     },
+
   },
+
   plugins: [],
+
 }

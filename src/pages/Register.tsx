@@ -1,84 +1,197 @@
-import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { AuthContext } from '../contexts/AuthContext';
+import React, { useState } from 'react';
 
-const Register: React.FC = () => {
-  const [name, setName] = useState('');
+import { useNavigate, Link } from 'react-router-dom';
+
+import { motion } from 'framer-motion';
+
+import { useAuth } from '../contexts/AuthContext';
+
+import { FiMail, FiLock, FiUserPlus } from 'react-icons/fi';
+
+
+
+const Register = () => {
+
   const [email, setEmail] = useState('');
+
   const [password, setPassword] = useState('');
-  const { register } = useContext(AuthContext);
+
+  const [error, setError] = useState('');
+
+  const { register } = useAuth();
+
   const navigate = useNavigate();
 
+
+
   const handleSubmit = async (e: React.FormEvent) => {
+
     e.preventDefault();
+
     try {
-      await register(name, email, password);
-      navigate('/home');
-    } catch (error) {
-      console.error('Registration failed:', error);
-      // Handle registration error (show message to user)
+
+      await register(email, password);
+
+      navigate('/dashboard/home');
+
+    } catch (err) {
+
+      setError('Failed to create an account');
+
     }
+
   };
 
+
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+
       <motion.div
+
         initial={{ opacity: 0, y: 20 }}
+
         animate={{ opacity: 1, y: 0 }}
+
         transition={{ duration: 0.5 }}
-        className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-96"
+
+        className="w-full max-w-md"
+
       >
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white">Create an Account</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-gray-700 dark:text-gray-300 mb-2">Name</label>
-            <input
-              type="text"
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
-              required
-            />
+
+        <div className="bg-surface/50 backdrop-blur-lg rounded-2xl p-8 shadow-xl border border-surface-light">
+
+          <div className="text-center mb-8">
+
+            <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
+
+            <p className="text-gray-400">Join Lumina Walls today</p>
+
           </div>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700 dark:text-gray-300 mb-2">Email</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
-              required
-            />
+
+
+
+          {error && (
+
+            <motion.div
+
+              initial={{ opacity: 0, y: -10 }}
+
+              animate={{ opacity: 1, y: 0 }}
+
+              className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-2 rounded-lg mb-6"
+
+            >
+
+              {error}
+
+            </motion.div>
+
+          )}
+
+
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+
+            <div>
+
+              <div className="relative">
+
+                <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+
+                <input
+
+                  type="email"
+
+                  placeholder="Email"
+
+                  value={email}
+
+                  onChange={(e) => setEmail(e.target.value)}
+
+                  className="w-full bg-background text-white pl-10 pr-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary border border-surface-light"
+
+                />
+
+              </div>
+
+            </div>
+
+
+
+            <div>
+
+              <div className="relative">
+
+                <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+
+                <input
+
+                  type="password"
+
+                  placeholder="Password"
+
+                  value={password}
+
+                  onChange={(e) => setPassword(e.target.value)}
+
+                  className="w-full bg-background text-white pl-10 pr-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary border border-surface-light"
+
+                />
+
+              </div>
+
+            </div>
+
+
+
+            <motion.button
+
+              whileHover={{ scale: 1.02 }}
+
+              whileTap={{ scale: 0.98 }}
+
+              type="submit"
+
+              className="w-full bg-primary hover:bg-primary-dark text-white py-3 rounded-lg font-semibold flex items-center justify-center space-x-2 transition-colors shadow-lg shadow-primary/20"
+
+            >
+
+              <FiUserPlus className="text-xl" />
+
+              <span>Create Account</span>
+
+            </motion.button>
+
+          </form>
+
+
+
+          <div className="mt-6 text-center text-gray-400">
+
+            Already have an account?{' '}
+
+            <Link to="/login" className="text-primary hover:text-primary-light transition-colors">
+
+              Sign In
+
+            </Link>
+
           </div>
-          <div className="mb-6">
-            <label htmlFor="password" className="block text-gray-700 dark:text-gray-300 mb-2">Password</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
-              required
-            />
-          </div>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            type="submit"
-            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors duration-300"
-          >
-            Register
-          </motion.button>
-        </form>
-        <p className="mt-4 text-center text-gray-600 dark:text-gray-400">
-          Already have an account? <Link to="/login" className="text-indigo-600 dark:text-indigo-400 hover:underline">Log in</Link>
-        </p>
+
+        </div>
+
       </motion.div>
+
     </div>
+
   );
+
 };
 
+
+
 export default Register;
+
+

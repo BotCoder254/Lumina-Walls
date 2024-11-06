@@ -1,97 +1,106 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { User } from 'firebase/auth';
-import { useAuth } from '../contexts/AuthContext';
-import { useTheme } from '../contexts/ThemeContext';
-
-interface HeaderProps {
-  toggleSidebar: () => void;
-  user: User | null;
-}
-
-const Header: React.FC<HeaderProps> = ({ toggleSidebar, user }) => {
-  const navigate = useNavigate();
-  const { logout } = useAuth();
-  const { isDark, toggleTheme } = useTheme();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/');
-    } catch (error) {
-      console.error('Failed to log out:', error);
-    }
-  };
-
-  return (
-    <header className="bg-white dark:bg-gray-800 shadow-sm">
-      <div className="flex items-center justify-between px-4 py-3">
-        <button
-          onClick={toggleSidebar}
-          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-        >
-          <MenuIcon className="w-6 h-6" />
-        </button>
-
-        <div className="flex items-center space-x-4">
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            {isDark ? <SunIcon className="w-6 h-6" /> : <MoonIcon className="w-6 h-6" />}
-          </button>
-
-          {user && (
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => navigate('/dashboard/profile')}
-                className="flex items-center space-x-2 hover:bg-gray-100 dark:hover:bg-gray-700 
-                rounded-lg px-3 py-2"
-              >
-                <img
-                  src={user.photoURL || '/default-avatar.png'}
-                  alt="Profile"
-                  className="w-8 h-8 rounded-full"
-                />
-                <span className="text-sm font-medium dark:text-white">
-                  {user.displayName || user.email}
-                </span>
-              </button>
-              <button
-                onClick={handleLogout}
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 
-                dark:hover:text-white px-3 py-2 rounded-lg"
-              >
-                Logout
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-    </header>
-  );
-};
-
-const MenuIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-  </svg>
-);
-
-const SunIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" 
-    />
-  </svg>
-);
-
-const MoonIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" 
-    />
-  </svg>
-);
-
-export default Header;
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import styled from 'styled-components';
+
+const HeaderContainer = styled.header`
+  background: linear-gradient(to right, #2c3e50, #3498db);
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+`;
+
+const Nav = styled.nav`
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const Logo = styled(Link)`
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &:hover {
+    opacity: 0.9;
+  }
+`;
+
+const NavLinks = styled.div`
+  display: flex;
+  gap: 2rem;
+`;
+
+const NavLink = styled(Link)`
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+`;
+
+const Header: React.FC = () => {
+  return (
+    <HeaderContainer>
+      <Nav>
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Logo to="/">
+            <span role="img" aria-label="logo">🚀</span>
+            YourBrand
+          </Logo>
+        </motion.div>
+
+        <NavLinks>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <NavLink to="/">Home</NavLink>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <NavLink to="/about">About</NavLink>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <NavLink to="/services">Services</NavLink>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <NavLink to="/contact">Contact</NavLink>
+          </motion.div>
+        </NavLinks>
+      </Nav>
+    </HeaderContainer>
+  );
+};
+
+export default Header;

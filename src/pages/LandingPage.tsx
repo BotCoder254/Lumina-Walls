@@ -1,258 +1,290 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { motion } from 'framer-motion';
 
-import { useAuth } from '../contexts/AuthContext';
+import { gsap } from 'gsap';
 
-import HeroIllustration from '../assets/hero-illustration';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-
-
-const LandingPage: React.FC = () => {
-
-  const navigate = useNavigate();
-
-  const { currentUser } = useAuth();
+import { FiArrowRight, FiMonitor, FiSmartphone, FiDownload, FiImage } from 'react-icons/fi';
 
 
 
-  const handleDashboardClick = () => {
+gsap.registerPlugin(ScrollTrigger);
 
-    navigate('/dashboard/home');
 
-  };
+
+const LandingPage = () => {
+
+  useEffect(() => {
+
+    const tl = gsap.timeline();
+
+    
+
+    tl.from('.hero-title', {
+
+      y: 100,
+
+      opacity: 0,
+
+      duration: 1,
+
+      ease: 'power4.out',
+
+    })
+
+    .from('.hero-description', {
+
+      y: 50,
+
+      opacity: 0,
+
+      duration: 0.8,
+
+    }, '-=0.5')
+
+    .from('.cta-button', {
+
+      scale: 0.8,
+
+      opacity: 0,
+
+      duration: 0.5,
+
+    }, '-=0.3');
+
+
+
+    // Features animation
+
+    gsap.from('.feature-card', {
+
+      scrollTrigger: {
+
+        trigger: '.features',
+
+        start: 'top center',
+
+      },
+
+      y: 100,
+
+      opacity: 0,
+
+      duration: 0.8,
+
+      stagger: 0.2,
+
+    });
+
+  }, []);
 
 
 
   return (
 
-    <motion.div 
+    <div className="min-h-screen bg-background">
 
-      initial={{ opacity: 0 }}
+      {/* Hero Section */}
 
-      animate={{ opacity: 1 }}
+      <div className="container mx-auto px-4 pt-32 pb-20">
 
-      exit={{ opacity: 0 }}
+        <div className="text-center">
 
-      className="min-h-screen w-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 overflow-x-hidden"
+          <motion.h1 
 
-    >
+            className="hero-title text-6xl md:text-7xl font-bold text-white mb-6"
 
-      <nav className="w-full py-6 px-4 absolute top-0 left-0">
+            initial={{ opacity: 0, y: 20 }}
 
-        <div className="container mx-auto flex justify-end">
+            animate={{ opacity: 1, y: 0 }}
 
-          {!currentUser && (
+          >
 
-            <div className="space-x-4">
+            Lumina <span className="text-primary">Walls</span>
 
-              <button
+          </motion.h1>
 
-                onClick={() => navigate('/login')}
+          <motion.p 
 
-                className="bg-white/10 text-white px-6 py-2 rounded-lg font-semibold 
+            className="hero-description text-xl text-gray-300 mb-8 max-w-2xl mx-auto"
 
-                hover:bg-white/20 transition duration-300"
+            initial={{ opacity: 0 }}
 
-              >
+            animate={{ opacity: 1 }}
 
-                Login
+            transition={{ delay: 0.2 }}
 
-              </button>
+          >
 
-              <button
+            Discover and download stunning wallpapers for all your devices. 
 
-                onClick={() => navigate('/register')}
+            Curated collection updated daily.
 
-                className="bg-white text-purple-600 px-6 py-2 rounded-lg font-semibold 
+          </motion.p>
 
-                hover:bg-opacity-90 transition duration-300"
+          <motion.div
 
-              >
+            className="cta-button"
 
-                Sign Up
+            whileHover={{ scale: 1.05 }}
 
-              </button>
+            whileTap={{ scale: 0.95 }}
 
-            </div>
+          >
 
-          )}
+            <Link
 
-        </div>
+              to="/login"
 
-      </nav>
-
-
-
-      <div className="container mx-auto px-4 pt-32 pb-16">
-
-        {/* Hero Section */}
-
-        <motion.div 
-
-          initial={{ opacity: 0, y: 20 }}
-
-          animate={{ opacity: 1, y: 0 }}
-
-          transition={{ duration: 0.5 }}
-
-          className="flex flex-col lg:flex-row items-center justify-between"
-
-        >
-
-          <div className="lg:w-1/2 text-white">
-
-            <h1 className="text-6xl font-bold mb-6">
-
-              Task Management
-
-              <br />
-
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200">
-
-                Reimagined
-
-              </span>
-
-            </h1>
-
-            <p className="text-xl mb-8 text-white/80">
-
-              Streamline your workflow, boost productivity, and collaborate seamlessly 
-
-              with our powerful task management solution.
-
-            </p>
-
-            {!currentUser && (
-
-              <button
-
-                onClick={() => navigate('/register')}
-
-                className="bg-white text-purple-600 px-8 py-4 rounded-lg font-semibold 
-
-                hover:bg-opacity-90 transition duration-300 shadow-lg"
-
-              >
-
-                Get Started - It's Free
-
-              </button>
-
-            )}
-
-            {currentUser ? (
-
-              <button
-
-                onClick={handleDashboardClick}
-
-                className="bg-white text-purple-600 px-8 py-4 rounded-lg font-semibold 
-
-                hover:bg-opacity-90 transition duration-300 shadow-lg"
-
-              >
-
-                Go to Dashboard
-
-              </button>
-
-            ) : (
-
-              <button
-
-                onClick={() => navigate('/login')}
-
-                className="bg-white text-purple-600 px-8 py-4 rounded-lg font-semibold 
-
-                hover:bg-opacity-90 transition duration-300 shadow-lg"
-
-              >
-
-                Go to Dashboard
-
-              </button>
-
-            )}
-
-          </div>
-
-          <div className="lg:w-1/2 mt-12 lg:mt-0">
-
-            <motion.div 
-
-              className="animate-float"
-
-              initial={{ opacity: 0, scale: 0.9 }}
-
-              animate={{ opacity: 1, scale: 1 }}
-
-              transition={{ duration: 0.5, delay: 0.2 }}
+              className="inline-flex items-center px-8 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition-colors"
 
             >
 
-              <HeroIllustration />
+              Get Started <FiArrowRight className="ml-2" />
 
-            </motion.div>
+            </Link>
 
-          </div>
+          </motion.div>
 
-        </motion.div>
-
-
-
-        {/* Features Section */}
-
-        <motion.div 
-
-          initial={{ opacity: 0, y: 20 }}
-
-          animate={{ opacity: 1, y: 0 }}
-
-          transition={{ duration: 0.5, delay: 0.4 }}
-
-          className="mt-32 grid md:grid-cols-3 gap-8"
-
-        >
-
-          <FeatureCard
-
-            title="Task Management"
-
-            description="Organize and track your tasks with our intuitive interface"
-
-            icon="📋"
-
-          />
-
-          <FeatureCard
-
-            title="Team Collaboration"
-
-            description="Work together seamlessly with real-time updates"
-
-            icon="👥"
-
-          />
-
-          <FeatureCard
-
-            title="Analytics"
-
-            description="Get insights into your productivity and team performance"
-
-            icon="📊"
-
-          />
-
-        </motion.div>
+        </div>
 
       </div>
 
-    </motion.div>
+
+
+      {/* Features Section */}
+
+      <div className="features container mx-auto px-4 py-20">
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+          <motion.div
+
+            whileHover={{ y: -5 }}
+
+            className="feature-card bg-surface p-8 rounded-xl backdrop-blur-sm border border-surface-light"
+
+          >
+
+            <div className="text-primary text-3xl mb-4">
+
+              <FiMonitor />
+
+            </div>
+
+            <h3 className="text-xl font-semibold text-white mb-2">Desktop Wallpapers</h3>
+
+            <p className="text-gray-400">High-resolution wallpapers perfect for your desktop setup</p>
+
+          </motion.div>
+
+          
+
+          <motion.div
+
+            whileHover={{ y: -5 }}
+
+            className="feature-card bg-surface p-8 rounded-xl backdrop-blur-sm border border-surface-light"
+
+          >
+
+            <div className="text-primary text-3xl mb-4">
+
+              <FiSmartphone />
+
+            </div>
+
+            <h3 className="text-xl font-semibold text-white mb-2">Mobile Wallpapers</h3>
+
+            <p className="text-gray-400">Stunning wallpapers optimized for your mobile devices</p>
+
+          </motion.div>
+
+          
+
+          <motion.div
+
+            whileHover={{ y: -5 }}
+
+            className="feature-card bg-surface p-8 rounded-xl backdrop-blur-sm border border-surface-light"
+
+          >
+
+            <div className="text-primary text-3xl mb-4">
+
+              <FiDownload />
+
+            </div>
+
+            <h3 className="text-xl font-semibold text-white mb-2">Easy Downloads</h3>
+
+            <p className="text-gray-400">One-click downloads in multiple resolutions</p>
+
+          </motion.div>
+
+        </div>
+
+      </div>
+
+
+
+      {/* Stats Section */}
+
+      <div className="bg-surface py-20">
+
+        <div className="container mx-auto px-4">
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+
+            {[
+
+              { icon: FiImage, label: 'Wallpapers', value: '10,000+' },
+
+              { icon: FiDownload, label: 'Downloads', value: '50,000+' },
+
+              { icon: FiSmartphone, label: 'Devices', value: '100+' },
+
+              { icon: FiMonitor, label: 'Categories', value: '20+' }
+
+            ].map((stat, index) => (
+
+              <motion.div
+
+                key={index}
+
+                initial={{ opacity: 0, y: 20 }}
+
+                whileInView={{ opacity: 1, y: 0 }}
+
+                viewport={{ once: true }}
+
+                transition={{ delay: index * 0.1 }}
+
+                className="text-center"
+
+              >
+
+                <stat.icon className="text-primary text-4xl mx-auto mb-4" />
+
+                <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
+
+                <div className="text-gray-400">{stat.label}</div>
+
+              </motion.div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
 
   );
 
@@ -260,40 +292,18 @@ const LandingPage: React.FC = () => {
 
 
 
-interface FeatureCardProps {
-
-  title: string;
-
-  description: string;
-
-  icon: string;
-
-}
-
-
-
-const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon }) => (
-
-  <motion.div 
-
-    whileHover={{ y: -5 }}
-
-    className="bg-white/10 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-white/20"
-
-  >
-
-    <div className="text-4xl mb-4">{icon}</div>
-
-    <h3 className="text-xl font-semibold mb-2 text-white">{title}</h3>
-
-    <p className="text-white/80">{description}</p>
-
-  </motion.div>
-
-);
-
-
-
 export default LandingPage;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
